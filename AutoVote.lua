@@ -1,4 +1,4 @@
--- Script AutoVote Ultra-Rápido con Toggle de Tecla "O" para Delta
+-- Script AutoVote Ultra-Rápido con Toggle de Tecla "Z" para Delta
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local UserInputService = game:GetService("UserInputService")
@@ -34,7 +34,7 @@ local statusLabel = Instance.new("TextLabel")
 statusLabel.Size = UDim2.new(1, 0, 0.4, 0)
 statusLabel.Position = UDim2.new(0, 0, 0.08, 0)
 statusLabel.BackgroundTransparency = 1
-statusLabel.Text = "AHORA: OFF (Tecla 'O')"
+statusLabel.Text = "AHORA: OFF (Tecla 'Z')"
 statusLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
 statusLabel.TextSize = 13
 statusLabel.Font = Enum.Font.SourceSansBold
@@ -44,7 +44,7 @@ local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0.85, 0, 0.38, 0)
 toggleButton.Position = UDim2.new(0.075, 0, 0.52, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-toggleButton.Text = "ACTIVAR (O)"
+toggleButton.Text = "ACTIVAR (Z)"
 toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleButton.TextSize = 14
 toggleButton.Font = Enum.Font.SourceSansBold
@@ -58,27 +58,27 @@ btnCorner.Parent = toggleButton
 local function toggleState()
     scriptActivo = not scriptActivo
     if scriptActivo then
-        statusLabel.Text = "AHORA: ON (Tecla 'O')"
+        statusLabel.Text = "AHORA: ON (Tecla 'Z')"
         statusLabel.TextColor3 = Color3.fromRGB(60, 255, 60)
-        toggleButton.Text = "DESACTIVAR (O)"
+        toggleButton.Text = "DESACTIVAR (Z)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
     else
-        statusLabel.Text = "AHORA: OFF (Tecla 'O')"
+        statusLabel.Text = "AHORA: OFF (Tecla 'Z')"
         statusLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
-        toggleButton.Text = "ACTIVAR (O)"
+        toggleButton.Text = "ACTIVAR (Z)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     end
 end
 
--- Detectar la tecla "O" del teclado
+-- Detectar la tecla "Z" del teclado
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    -- Si no estás escribiendo en el chat y presiones 'O'
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.O then
+    -- Si no estás escribiendo en el chat y presionas 'Z'
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.Z then
         toggleState()
     end
 end)
 
--- También funciona haciendo clic en la pantalla por si estás en móvil
+-- Clic manual en la pantalla
 toggleButton.MouseButton1Click:Connect(toggleState)
 
 -- Función ultra-rápida de clic
