@@ -1,4 +1,4 @@
--- Script AutoVote Ultra-Rápido con Tecla "O" para Delta
+-- Script AutoVote Ultra-Rápido con Toggle de Tecla "O" para Delta
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local UserInputService = game:GetService("UserInputService")
@@ -34,7 +34,7 @@ local statusLabel = Instance.new("TextLabel")
 statusLabel.Size = UDim2.new(1, 0, 0.4, 0)
 statusLabel.Position = UDim2.new(0, 0, 0.08, 0)
 statusLabel.BackgroundTransparency = 1
-statusLabel.Text = "AHORA: OFF (Presiona 'O')"
+statusLabel.Text = "AHORA: OFF (Tecla 'O')"
 statusLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
 statusLabel.TextSize = 13
 statusLabel.Font = Enum.Font.SourceSansBold
@@ -54,30 +54,31 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(0, 6)
 btnCorner.Parent = toggleButton
 
--- Función para alternar estado (ON / OFF)
+-- Función para Activar/Desactivar
 local function toggleState()
     scriptActivo = not scriptActivo
     if scriptActivo then
-        statusLabel.Text = "AHORA: ON (Presiona 'O')"
+        statusLabel.Text = "AHORA: ON (Tecla 'O')"
         statusLabel.TextColor3 = Color3.fromRGB(60, 255, 60)
         toggleButton.Text = "DESACTIVAR (O)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
     else
-        statusLabel.Text = "AHORA: OFF (Presiona 'O')"
+        statusLabel.Text = "AHORA: OFF (Tecla 'O')"
         statusLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
         toggleButton.Text = "ACTIVAR (O)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     end
 end
 
--- Asignar la tecla "O" del teclado
+-- Detectar la tecla "O" del teclado
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    -- Si no estás escribiendo en el chat y presiones 'O'
     if not gameProcessed and input.KeyCode == Enum.KeyCode.O then
         toggleState()
     end
 end)
 
--- Clic al botón de la GUI
+-- También funciona haciendo clic en la pantalla por si estás en móvil
 toggleButton.MouseButton1Click:Connect(toggleState)
 
 -- Función ultra-rápida de clic
@@ -88,7 +89,7 @@ local function clickGUIElement(guiObject)
     local clickX = absolutePosition.X + (absoluteSize.X / 2)
     local clickY = absolutePosition.Y + (absoluteSize.Y / 2) + 36
     
-    -- Eventos de clic inmediatos sin pausas
+    -- Disparo instantáneo de clics
     VirtualInputManager:SendMouseButtonEvent(clickX, clickY, 0, true, game, 1)
     VirtualInputManager:SendMouseButtonEvent(clickX, clickY, 0, false, game, 1)
     
@@ -98,7 +99,7 @@ local function clickGUIElement(guiObject)
     end)
 end
 
--- Bucle a la máxima velocidad del juego (RenderStepped)
+-- Bucle a máxima velocidad (RenderStepped)
 RunService.RenderStepped:Connect(function()
     if not scriptActivo then return end
     
