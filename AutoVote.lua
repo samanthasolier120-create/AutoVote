@@ -1,4 +1,4 @@
--- Script AutoVote Ultra-Rápido con Toggle de Tecla "Z" para Delta
+-- Script AutoVote VELOCIDAD EXTREMA (Z Toggle)
 local Players = game:GetService("Players")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local UserInputService = game:GetService("UserInputService")
@@ -8,6 +8,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local TargetUser = "iubirea_Tha156"
 local scriptActivo = false
+local cachedButton = nil
 
 -- Crear Interfaz Flotante
 local screenGui = Instance.new("ScreenGui")
@@ -54,7 +55,6 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(0, 6)
 btnCorner.Parent = toggleButton
 
--- Función para Activar/Desactivar
 local function toggleState()
     scriptActivo = not scriptActivo
     if scriptActivo then
@@ -67,31 +67,45 @@ local function toggleState()
         statusLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
         toggleButton.Text = "ACTIVAR (Z)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        cachedButton = nil -- Limpiar memoria al desactivar
     end
 end
 
--- Detectar la tecla "Z" del teclado
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    -- Si no estás escribiendo en el chat y presionas 'Z'
     if not gameProcessed and input.KeyCode == Enum.KeyCode.Z then
         toggleState()
     end
 end)
 
--- Clic manual en la pantalla
 toggleButton.MouseButton1Click:Connect(toggleState)
 
--- Función ultra-rápida de clic
-local function clickGUIElement(guiObject)
+-- Busca el botón una sola vez
+local function findTargetButton()
+    local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+    if not playerGui then return nil end
+    
+    for _, label in pairs(playerGui:GetDescendants()) do
+        if (label:IsA("TextLabel") or label:IsA("TextButton")) and string.find(string.lower(label.Text), string.lower(TargetUser)) then
+            return label:FindFirstAncestorOfClass("TextButton") 
+                or label:FindFirstAncestorOfClass("ImageButton") 
+                or label.Parent
+        end
+    end
+    return nil
+end
+
+-- Ráfaga instantánea de clics por frame
+local function spamClick(guiObject)
     local absolutePosition = guiObject.AbsolutePosition
     local absoluteSize = guiObject.AbsoluteSize
-    
     local clickX = absolutePosition.X + (absoluteSize.X / 2)
     local clickY = absolutePosition.Y + (absoluteSize.Y / 2) + 36
     
-    -- Disparo instantáneo de clics
-    VirtualInputManager:SendMouseButtonEvent(clickX, clickY, 0, true, game, 1)
-    VirtualInputManager:SendMouseButtonEvent(clickX, clickY, 0, false, game, 1)
+    -- Dispara 5 clics de golpe en el mismo fotograma
+    for i = 1, 5 do
+        VirtualInputManager:SendMouseButtonEvent(clickX, clickY, 0, true, game, 1)
+        VirtualInputManager:SendMouseButtonEvent(clickX, clickY, 0, false, game, 1)
+    end
     
     pcall(function()
         for _, conn in pairs(getconnections(guiObject.MouseButton1Click)) do conn:Fire() end
@@ -99,24 +113,19 @@ local function clickGUIElement(guiObject)
     end)
 end
 
--- Bucle a máxima velocidad (RenderStepped)
+-- Bucle de máxima prioridad (RenderStepped)
 RunService.RenderStepped:Connect(function()
     if not scriptActivo then return end
     
-    pcall(function()
-        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
-        if playerGui then
-            for _, label in pairs(playerGui:GetDescendants()) do
-                if (label:IsA("TextLabel") or label:IsA("TextButton")) and string.find(string.lower(label.Text), string.lower(TargetUser)) then
-                    local btn = label:FindFirstAncestorOfClass("TextButton") 
-                             or label:FindFirstAncestorOfClass("ImageButton") 
-                             or label.Parent
-                    
-                    if btn then
-                        clickGUIElement(btn)
-                    end
-                end
-            end
-        end
-    end)
+    -- Si no tenemos el botón guardado o se destruyó, lo buscamos
+    if not cachedButton or not cachedButton:IsDescendantOf(game) then
+        cachedButton = findTargetButton()
+    end
+    
+    -- Si el botón existe en pantalla, le hace ráfaga de clics
+    if cachedButton then
+        pcall(function()
+            spamClick(cachedButton)
+        end)
+    end
 end)
