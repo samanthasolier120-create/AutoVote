@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local LocalPlayer = Players.LocalPlayer
 
-local TargetUser = "iubirea_Tha156"
+local TargetUser = "Lorena"
 local scriptActivo = false
 local cachedButton = nil
 
