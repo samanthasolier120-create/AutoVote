@@ -58,12 +58,12 @@ btnCorner.Parent = toggleButton
 local function toggleState()
     scriptActivo = not scriptActivo
     if scriptActivo then
-        statusLabel.Text = "AHORA: ON (Tecla 'Z')"
+        statusLabel.Text = "AHORA: ON (Tecla 'M')"
         statusLabel.TextColor3 = Color3.fromRGB(60, 255, 60)
-        toggleButton.Text = "DESACTIVAR (Z)"
+        toggleButton.Text = "DESACTIVAR (M)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
     else
-        statusLabel.Text = "AHORA: OFF (Tecla 'Z')"
+        statusLabel.Text = "AHORA: OFF (Tecla 'M')"
         statusLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
         toggleButton.Text = "ACTIVAR (Z)"
         toggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
